@@ -262,10 +262,19 @@ const target=new Date(C.event.startISO).getTime(), pad=n=>String(n).padStart(2,'
   cells.d.textContent=pad(Math.floor(s/86400)); cells.h.textContent=pad(Math.floor(s%86400/3600));
   cells.m.textContent=pad(Math.floor(s%3600/60)); cells.s.textContent=pad(s%60); setTimeout(tick,1000); })();
 
+/* ── güvenilir link açma (mobil + sandbox) ── */
+function openUrl(url){
+  try{
+    const a=document.createElement('a'); a.href=url; a.target='_blank'; a.rel='noopener noreferrer';
+    document.body.appendChild(a); a.click(); a.remove();
+  }catch(e){ try{ if(!window.open(url,'_blank')) location.href=url; }catch(_){ location.href=url; } }
+}
+
 /* ── harita ── */
 $('#hotMap').addEventListener('click',()=>{ const L=C.location;
-  const url=L.mapUrl||('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(L.name+', '+L.line));
-  window.open(url,'_blank','noopener'); });
+  const q=(L.name+' '+L.line).replace(/\s*·\s*/g,' ').replace(/\s+/g,' ').trim();
+  const url=L.mapUrl||('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q));
+  openUrl(url); });
 
 /* ── RSVP ── */
 const sheet=$('#sheet'); let ans='yes', tT;
@@ -276,7 +285,7 @@ function openSheet(w){ans=w; $('#sheetTitle').textContent=w==='yes'?'Katılıyor
 function closeSheet(){sheet.classList.remove('on');}
 function send(){const name=($('#guestName').value||'').trim();
   const base=ans==='yes'?C.rsvp.yesMsg:C.rsvp.noMsg, text=name?base+'\n— '+name:base;
-  window.open('https://wa.me/'+C.rsvp.whatsapp+'?text='+encodeURIComponent(text),'_blank','noopener');
+  openUrl('https://wa.me/'+C.rsvp.whatsapp+'?text='+encodeURIComponent(text));
   closeSheet(); toast(ans==='yes'?'Teşekkürler, seni bekliyoruz 💗':'Bilgin iletildi, teşekkürler');}
 $('#hotYes').addEventListener('click',()=>C.rsvp.askName?openSheet('yes'):(ans='yes',send()));
 $('#hotNo').addEventListener('click',()=>C.rsvp.askName?openSheet('no'):(ans='no',send()));
