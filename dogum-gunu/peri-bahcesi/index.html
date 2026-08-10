@@ -98,7 +98,7 @@ body{font-family:Georgia,'Times New Roman',serif;color:var(--ink);background:#1c
 @keyframes breathe{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.5}50%{transform:translate(-50%,-50%) scale(1.12);opacity:1}}
 
 /* açılış videosu */
-#gate{position:absolute; inset:0; z-index:22; background:#f2dcc8;
+#gate{position:absolute; inset:0; z-index:22; background:transparent;
   opacity:0; visibility:hidden; transition:opacity .5s ease, visibility .5s}
 #gate.on{opacity:1; visibility:visible}
 #gate video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block}
@@ -233,19 +233,28 @@ function reveal(){
 }
 function begin(){
   if(started) return; started=true;
-  intro.classList.add('gone');
-  gate.classList.add('on');
-  ov.src='assets/acilis.mp4'; ov.muted=false; ov.playsInline=true;
+  let gateShown=false;
+  const showGate=()=>{ if(gateShown) return; gateShown=true;
+    gate.classList.add('on'); setTimeout(()=>intro.classList.add('gone'),140); };
+  try{ ov.currentTime=0; }catch(e){}
   const p=ov.play(); if(p&&p.catch) p.catch(()=>{ ov.muted=true; ov.play().catch(reveal); });
+  /* #gate yalnızca video ilk karesi hazır/oynuyorken açılır → arada boş kare olmaz */
+  if(ov.readyState>=2) showGate();
+  ov.addEventListener('loadeddata', showGate, {once:true});
+  ov.addEventListener('playing', showGate, {once:true});
   ov.addEventListener('ended', reveal, {once:true});
   ov.addEventListener('error', reveal, {once:true});
   ov.addEventListener('timeupdate', function t(){ if(revealed){ov.removeEventListener('timeupdate',t);return;}
     if(ov.duration&&isFinite(ov.duration)&&ov.currentTime>=ov.duration-0.25) reveal(); });
-  setTimeout(reveal, 9000); /* emniyet */
+  setTimeout(showGate, 1200); /* güvenlik */
+  setTimeout(reveal, 9000);   /* emniyet */
 }
 intro.addEventListener('click', begin);
 intro.addEventListener('touchend', e=>{e.preventDefault();begin();},{passive:false});
 intro.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();begin();} });
+
+/* açılış videosunu önden hazırla → mühre dokununca anında oynar */
+try{ ov.src='assets/acilis.mp4'; ov.muted=true; ov.playsInline=true; ov.preload='auto'; ov.load(); }catch(e){}
 
 /* ── scroll animasyonu ── */
 const io=new IntersectionObserver((es)=>{es.forEach(e=>{
