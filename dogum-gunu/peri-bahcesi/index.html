@@ -61,7 +61,7 @@ body{font-family:Georgia,'Times New Roman',serif;color:var(--ink);background:#1c
 .sec.out > *{opacity:0; transform:translate3d(0,-16px,0)}
 
 .art{width:100%; display:block; filter:drop-shadow(0 8px 16px rgba(120,70,40,.28))}
-.wrap{position:relative; width:100%}
+.wrap{position:relative; width:90%; margin:0 auto}
 
 /* görünmez buton isabet alanları (detaylar.webp) */
 .hot{position:absolute; border:0; background:transparent; cursor:pointer; border-radius:100px;
@@ -71,15 +71,15 @@ body{font-family:Georgia,'Times New Roman',serif;color:var(--ink);background:#1c
 
 /* çerçeve içi geri sayım (cerceve.webp) */
 .frame-wrap{position:relative; width:100%; container-type:inline-size}
-.timer{position:absolute; left:48.5%; top:52.5%; transform:translate(-50%,-50%);
-  width:58%; text-align:center; pointer-events:none}
-.timer .ttl{font-size:5cqw; letter-spacing:.12em; text-transform:uppercase; color:var(--rose-deep);
-  font-weight:700; margin-bottom:2.6cqw; text-shadow:0 1px 0 rgba(255,255,255,.5)}
-.timer .cd{display:flex; justify-content:center; gap:3.4cqw}
-.timer .u{display:flex; flex-direction:column; align-items:center; min-width:11cqw}
-.timer .u b{font-size:10cqw; line-height:1; font-weight:700; color:var(--gold-deep);
+.timer{position:absolute; left:48.5%; top:55%; transform:translate(-50%,-50%);
+  width:50%; text-align:center; pointer-events:none}
+.timer .ttl{font-size:4.1cqw; letter-spacing:.1em; text-transform:uppercase; color:var(--rose-deep);
+  font-weight:700; margin-bottom:1.6cqw; text-shadow:0 1px 0 rgba(255,255,255,.5)}
+.timer .cd{display:flex; justify-content:center; gap:2.4cqw}
+.timer .u{display:flex; flex-direction:column; align-items:center; min-width:9cqw}
+.timer .u b{font-size:8cqw; line-height:1; font-weight:700; color:var(--gold-deep);
   font-variant-numeric:tabular-nums; text-shadow:0 1px 0 rgba(255,255,255,.55), 0 2px 3px rgba(150,100,40,.35)}
-.timer .u span{font-size:3.2cqw; letter-spacing:.08em; text-transform:uppercase; color:var(--ink); margin-top:1.4cqw; opacity:.85}
+.timer .u span{font-size:2.6cqw; letter-spacing:.06em; text-transform:uppercase; color:var(--ink); margin-top:1cqw; opacity:.85}
 
 /* ══════════ KAPAK (kapak.webp zarf) ══════════ */
 #intro{position:absolute; inset:0; z-index:20; cursor:pointer;
