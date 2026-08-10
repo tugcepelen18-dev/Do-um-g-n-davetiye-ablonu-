@@ -113,7 +113,7 @@ body{font-family:Georgia,'Times New Roman',serif;color:var(--ink);background:#1c
 
 /* RSVP sayfası */
 .sheet{position:fixed; inset:0; z-index:50; display:grid; place-items:center; padding:22px;
-  background:rgba(30,16,20,.62); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  background:rgba(24,12,16,.85);
   opacity:0; visibility:hidden; transition:opacity .38s var(--ease), visibility .38s}
 .sheet.on{opacity:1; visibility:visible}
 .sheet-card{width:100%; max-width:330px; background:linear-gradient(168deg,#fdf7f0,#f7e4ea);
@@ -286,12 +286,12 @@ $('#hotMap').addEventListener('click',()=>{ const L=C.location;
   openUrl(url); });
 
 /* ── RSVP ── */
-const sheet=$('#sheet'); let ans='yes', tT;
+const sheet=$('#sheet'); let ans='yes', tT, dustPaused=false;
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('on'),2600);}
 function openSheet(w){ans=w; $('#sheetTitle').textContent=w==='yes'?'Katılıyorum':'Katılamıyorum';
   $('#sheetText').textContent=w==='yes'?'İsmini yaz, katılım bilgini iletelim.':'İsmini yaz, bilgini iletelim. Seni özleyeceğiz.';
-  sheet.classList.add('on'); if(C.rsvp.askName) setTimeout(()=>$('#guestName').focus(),380);}
-function closeSheet(){sheet.classList.remove('on');}
+  sheet.classList.add('on'); dustPaused=true; if(C.rsvp.askName) setTimeout(()=>$('#guestName').focus(),380);}
+function closeSheet(){sheet.classList.remove('on'); dustPaused=false;}
 function send(){const name=($('#guestName').value||'').trim();
   const base=ans==='yes'?C.rsvp.yesMsg:C.rsvp.noMsg, text=name?base+'\n— '+name:base;
   openUrl('https://wa.me/'+C.rsvp.whatsapp+'?text='+encodeURIComponent(text));
@@ -311,14 +311,14 @@ function size(){DPR=Math.min(devicePixelRatio||1,2);W=cv.clientWidth;H=cv.client
   parts=Array.from({length:Math.max(16,Math.min(44,n))},()=>({x:Math.random()*W,y:Math.random()*H,
     r:.5+Math.random()*1.9,vy:-(3+Math.random()*9)/60,vx:(Math.random()-.5)*.22,
     a:.08+Math.random()*.4,ph:Math.random()*6.28,sp:.5+Math.random()*1.2}));}
-function draw(t){ctx.clearRect(0,0,W,H);
+function draw(t){requestAnimationFrame(draw); if(dustPaused){return;} ctx.clearRect(0,0,W,H);
   for(const p of parts){p.y+=p.vy;p.x+=p.vx+Math.sin(t/900*p.sp+p.ph)*.14;
     if(p.y<-6){p.y=H+6;p.x=Math.random()*W;}
     const tw=p.a*(.55+.45*Math.sin(t/600*p.sp+p.ph));
     ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.283);
     ctx.fillStyle='rgba(255,228,186,'+tw+')';ctx.shadowBlur=6;ctx.shadowColor='rgba(255,210,150,.7)';
     ctx.fill();ctx.shadowBlur=0;}
-  requestAnimationFrame(draw);}
+}
 size();addEventListener('resize',size,{passive:true});requestAnimationFrame(draw);
 })();
 </script>
