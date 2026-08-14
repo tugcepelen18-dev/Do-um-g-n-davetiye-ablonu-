@@ -216,7 +216,7 @@ body{font-family:'KutlamaBody',-apple-system,BlinkMacSystemFont,'Segoe UI',syste
   letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);margin-top:5px}
 
 /* ── butonlar ── */
-.acts{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(7px,2vw,11px)}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:clamp(8px,2.4vw,12px)}
 .act{font:inherit;cursor:pointer;border:1px solid rgba(255,255,255,.5);
   border-radius:var(--r-md);padding:clamp(9px,2.5vw,12px) 4px;
   display:flex;flex-direction:column;align-items:center;gap:6px;color:#fff;
@@ -316,7 +316,6 @@ body{font-family:'KutlamaBody',-apple-system,BlinkMacSystemFont,'Segoe UI',syste
         <div class="tile glass">
           <span class="lbl">Saat</span>
           <span class="val" id="saat">—</span>
-          <span class="sub">Kapılar açık</span>
         </div>
       </div>
 
@@ -343,10 +342,6 @@ body{font-family:'KutlamaBody',-apple-system,BlinkMacSystemFont,'Segoe UI',syste
       </div>
 
       <div class="acts rise r6">
-        <button class="act a1" id="btnCd" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="13" r="8"/><path d="M12 9.5V13l2.4 1.6M9 2h6M18.6 5.6l1.6 1.6"/>
-          </svg>Geri Sayım</button>
         <button class="act a2" id="btnMap" type="button">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M9.2 20.4 3.4 22V6.4l5.8-1.6m0 15.6 5.6-1.6m-5.6 1.6V4.8m5.6 13.6L20.6 20V4.4l-5.8 1.6m0 12.4V6"/>
@@ -374,7 +369,7 @@ body{font-family:'KutlamaBody',-apple-system,BlinkMacSystemFont,'Segoe UI',syste
            disablepictureinpicture disableremoteplayback></video>
   </section>
 
-  <div class="tap" id="tap"><b>Dokun ve Aç 🎈</b></div>
+  <div class="tap" id="tap"><b>Perdeye dokun</b></div>
   <button class="skip" id="skip" type="button">Atla</button>
 </div></div>
 
@@ -423,7 +418,7 @@ function openUrl(u){try{const a=document.createElement('a');a.href=u;a.target='_
   catch(e){try{if(!window.open(u,'_blank'))location.href=u;}catch(_){location.href=u;}}}
 
 /* ══ AKIŞ: kapak → giriş → davetiye ══ */
-let stage2=false,done=false;
+let stage2=false,done=false,tapped=false,coverBozuk=false;
 cv.src='assets/kapak.mp4'; cv.load();
 iv.src='assets/giris.mp4'; iv.load();
 
@@ -445,23 +440,25 @@ function playIntro(){
   setTimeout(go,700);
   setTimeout(showMain,12000);
 }
-cv.addEventListener('ended',playIntro,{once:true});
-cv.addEventListener('error',playIntro,{once:true});
+cv.addEventListener('ended',()=>{ if(tapped) playIntro(); },{once:true});
+cv.addEventListener('error',()=>{ coverBozuk=true; if(tapped) playIntro(); },{once:true});
 cv.addEventListener('timeupdate',function t(){ if(stage2){cv.removeEventListener('timeupdate',t);return;}
   if(cv.duration&&isFinite(cv.duration)&&cv.currentTime>=cv.duration-0.12) playIntro(); });
 
 function startCover(){
+  if(tapped) return; tapped=true;
   tap.classList.remove('on');
+  if(coverBozuk){ playIntro(); return; }
   const p=cv.play();
-  if(p&&p.catch) p.catch(()=>tap.classList.add('on'));
+  if(p&&p.catch) p.catch(()=>playIntro());
   setTimeout(()=>skip.classList.add('on'),1400);
+  setTimeout(()=>{ if(!stage2&&!done&&cv.paused&&cv.currentTime===0) playIntro(); },2500);
 }
 tap.addEventListener('click',startCover);
 tap.addEventListener('touchend',e=>{e.preventDefault();startCover();},{passive:false});
 skip.addEventListener('click',showMain);
-if(cv.readyState>=2) startCover(); else cv.addEventListener('loadeddata',startCover,{once:true});
-setTimeout(()=>{ if(!stage2&&!done&&cv.paused) tap.classList.add('on'); },1200);
-setTimeout(()=>{ if(!done) showMain(); },20000);
+/* İlk animasyon kullanıcı dokunmadan oynamaz */
+tap.classList.add('on');
 
 /* ══ canlı geri sayım (hafif tik animasyonu) ══ */
 const U={d:$('#uD'),h:$('#uH'),m:$('#uM'),s:$('#uS')};
@@ -476,10 +473,6 @@ function setU(k,v){ if(prev[k]===v) return; prev[k]=v; B[k].textContent=v;
   setTimeout(tick,1000); })();
 
 /* ══ butonlar ══ */
-$('#btnCd').addEventListener('click',()=>{
-  const w=$('#countBox'); w.classList.toggle('hide');
-  if(!w.classList.contains('hide')) setTimeout(()=>w.scrollIntoView({behavior:'smooth',block:'nearest'}),120);
-});
 function acHarita(){
   const q=(C.mekan+' '+C.adres).replace(/\s*·\s*/g,' ').replace(/\s+/g,' ').trim();
   openUrl(C.haritaURL||('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q)));
