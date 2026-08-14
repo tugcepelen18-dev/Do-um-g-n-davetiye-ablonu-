@@ -115,9 +115,47 @@ body{font-family:'KutlamaBody',-apple-system,BlinkMacSystemFont,'Segoe UI',syste
   background:linear-gradient(135deg,var(--pink),var(--grape));
   padding:7px 15px;border-radius:999px;margin-bottom:3.2%;
   box-shadow:0 6px 16px rgba(180,70,130,.32)}
-h1{font-family:'Kutlama',system-ui;font-weight:600;line-height:1.06;
-  font-size:clamp(31px,8.6vw,46px);color:#fff;letter-spacing:.01em;
-  text-shadow:0 3px 0 rgba(78,154,46,.55),0 6px 22px rgba(12,44,20,.5),0 1px 2px rgba(0,0,0,.35)}
+/* ─ gösterişli isim ─ */
+.name{position:relative;display:block;font-family:'Kutlama',system-ui;font-weight:600;
+  font-size:clamp(46px,14.5vw,76px);line-height:1;letter-spacing:.005em;margin:1.2% 0 0}
+.name span{position:relative;z-index:2;
+  background:linear-gradient(178deg,#FFF6DA 4%,#FFD86B 38%,#FFAF3A 62%,#FF8FB8 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 2px 0 rgba(255,255,255,.55))}
+.name::before{content:attr(data-t);position:absolute;inset:0;z-index:1;
+  color:#fff;-webkit-text-stroke:.19em #fff;text-stroke:.19em #fff;
+  text-shadow:0 5px 0 rgba(78,154,46,.5),0 9px 26px rgba(12,44,20,.55),0 2px 3px rgba(0,0,0,.3)}
+/* ışık süzülmesi */
+.name::after{content:'';position:absolute;inset:-6% -14%;z-index:3;pointer-events:none;
+  background:linear-gradient(102deg,transparent 38%,rgba(255,255,255,.72) 48%,transparent 58%);
+  -webkit-mask-image:linear-gradient(#000,#000);mask-image:linear-gradient(#000,#000);
+  transform:translateX(-120%);animation:shine 5.6s ease-in-out 1.2s infinite}
+@keyframes shine{0%{transform:translateX(-120%)}26%,100%{transform:translateX(120%)}}
+
+.age{display:inline-flex;align-items:center;gap:9px;margin-top:2.4%;
+  padding:7px 18px;border-radius:999px;
+  background:linear-gradient(150deg,rgba(255,255,255,.96),rgba(255,238,246,.9));
+  border:1.5px solid rgba(255,255,255,.95);
+  box-shadow:0 10px 24px -10px rgba(28,60,30,.5),0 2px 0 rgba(255,255,255,.7) inset}
+.age b{font-family:'Kutlama',system-ui;font-weight:600;font-size:clamp(17px,4.8vw,22px);
+  line-height:1;background:linear-gradient(160deg,var(--pink),var(--pink-deep));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.age i{font-style:normal;font-size:clamp(11px,3vw,13px);color:var(--sun-deep);
+  animation:twinkle 2.6s ease-in-out infinite}
+.age i:last-child{animation-delay:1.3s}
+@keyframes twinkle{0%,100%{opacity:.45;transform:scale(.86)}50%{opacity:1;transform:scale(1.15)}}
+
+/* ─ mekân ─ */
+.venue{display:flex;align-items:center;gap:11px;margin-top:3%;
+  background:linear-gradient(168deg,rgba(255,253,246,.94),rgba(255,244,226,.9));
+  border:1.5px solid rgba(255,255,255,.9);border-radius:18px;padding:3.6% 4.4%;
+  box-shadow:0 12px 28px -14px rgba(28,60,30,.4)}
+.venue .pin{font-size:clamp(17px,4.6vw,21px);line-height:1;flex:0 0 auto}
+.venue .tx{min-width:0}
+.venue b{display:block;font-family:'Kutlama',system-ui;font-weight:600;
+  font-size:clamp(14px,4vw,17px);color:var(--ink);line-height:1.2}
+.venue small{display:block;font-size:clamp(11.5px,3.2vw,13px);color:var(--ink-soft);
+  line-height:1.4;margin-top:2px}
 
 /* içerik kartları */
 .card{background:linear-gradient(168deg,rgba(255,253,246,.94),rgba(255,244,226,.9));
@@ -210,6 +248,7 @@ h1{font-family:'Kutlama',system-ui;font-weight:600;line-height:1.06;
 @media(prefers-reduced-motion:reduce){
   #bg{animation:none} #confetti{display:none}
   .rise{transition-duration:.25s!important} .tap b{animation:none}
+  .name::after,.age i{animation:none} .name::after{display:none}
 }
 </style>
 </head>
@@ -225,7 +264,8 @@ h1{font-family:'Kutlama',system-ui;font-weight:600;line-height:1.06;
     <div class="deck">
       <div class="hero rise r1">
         <span class="eyebrow">Doğum Günü Daveti</span>
-        <h1 id="h1">Deniz 3 Yaşında! 🎈</h1>
+        <h1 class="name" id="h1" data-t="Deniz"><span>Deniz</span></h1>
+        <div class="age" id="age"><i>✦</i><b>3 Yaşında!</b><i>✦</i></div>
       </div>
 
       <div class="card rise r2"><p class="msg" id="msg"></p></div>
@@ -233,6 +273,11 @@ h1{font-family:'Kutlama',system-ui;font-weight:600;line-height:1.06;
       <div class="when rise r3">
         <div class="box"><div class="k">Tarih</div><div class="v" id="tarih">—</div></div>
         <div class="box"><div class="k">Saat</div><div class="v" id="saat">—</div></div>
+      </div>
+
+      <div class="venue rise r3" id="venue">
+        <span class="pin">📍</span>
+        <span class="tx"><b id="mekan">—</b><small id="adres">—</small></span>
       </div>
 
       <div class="cd rise r4" id="cdWrap">
@@ -299,10 +344,15 @@ const stage=$('#stage'),cover=$('#cover'),intro=$('#intro'),main=$('#main'),
       cv=$('#coverVid'),iv=$('#introVid'),tap=$('#tap'),skip=$('#skip');
 
 /* ── içerik ── */
-$('#h1').textContent=C.baslik;
+$('#h1').setAttribute('data-t',C.cocuk);
+$('#h1').querySelector('span').textContent=C.cocuk;
+$('#age b').textContent=C.yas+' Yaşında!';
 $('#msg').textContent=C.mesaj;
 $('#tarih').textContent=C.tarihYazi;
 $('#saat').textContent=C.saatYazi;
+$('#mekan').textContent=C.mekan;
+$('#adres').textContent=C.adres;
+document.title=C.cocuk+' '+C.yas+' Yaşında · Doğum Günü Daveti';
 
 /* ── güvenilir link açma ── */
 function openUrl(u){try{const a=document.createElement('a');a.href=u;a.target='_blank';
@@ -363,10 +413,13 @@ $('#btnCd').addEventListener('click',()=>{
   const w=$('#cdWrap'); w.classList.toggle('hide');
   if(!w.classList.contains('hide')) w.scrollIntoView({behavior:'smooth',block:'nearest'});
 });
-$('#btnMap').addEventListener('click',()=>{
+function acHarita(){
   const q=(C.mekan+' '+C.adres).replace(/\s*·\s*/g,' ').replace(/\s+/g,' ').trim();
   openUrl(C.haritaURL||('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q)));
-});
+}
+$('#btnMap').addEventListener('click',acHarita);
+$('#venue').addEventListener('click',acHarita);
+$('#venue').style.cursor='pointer';
 
 /* ══ RSVP ══ */
 const sheet=$('#sheet'); let ans='yes',tT,confettiPaused=false;
