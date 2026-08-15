@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#f2dcc8">
+<title>Asel · 4 Yaşında · Peri Bahçesi Daveti</title>
+<script>
+/* ══════════ CONFIG — tek özelleştirme yüzeyi ══════════ */
+window.CONFIG = {
+  event:{ startISO:'2027-01-22T14:00:00+03:00', title:'Asel · 4 Yaş Doğum Günü' },
+  location:{ name:'Masal Bahçesi', line:'Mutluluk Sk. No:4 · Çiçekköy / İstanbul', mapUrl:'' },
+  rsvp:{
+    whatsapp:'905000000000', askName:true,
+    yesMsg:'Merhaba! Asel’in doğum günü davetine katılıyorum. 💗',
+    noMsg :'Merhaba! Asel’in doğum günü davetine maalesef katılamıyorum.'
+  }
+};
+</script>
+<style>
+:root{
+  --gold-1:#f4dfa6; --gold-2:#e2bd72; --gold-3:#c69a52; --gold-deep:#a9741e;
+  --rose:#d17a94; --rose-deep:#b5416a; --ink:#7a5a48;
+  --stage-max:520px;
+  --ease:cubic-bezier(.22,.61,.36,1);
+  /* kartın iç penceresi (arka-plan görseline göre %) */
+  --win-l:15%; --win-w:70%; --win-t:15.5%; --win-h:63%;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{font-family:Georgia,'Times New Roman',serif;color:var(--ink);background:#1c1013;
+  -webkit-font-smoothing:antialiased}
+
+.frame{position:fixed;inset:0;display:grid;place-items:center;
+  background:radial-gradient(120% 80% at 50% 30%, #3a2028, #150b0e 80%)}
+.stage{position:relative;
+  width:min(100%,var(--stage-max),calc(100dvh * .5625));
+  aspect-ratio:941/1672; overflow:hidden;
+  background:url("assets/arka-plan.webp") center center / 100% 100% no-repeat;
+  box-shadow:0 30px 90px rgba(0,0,0,.6)}
+@media(min-width:600px){.stage{border-radius:14px}}
+
+#dust{position:absolute;inset:0;z-index:2;pointer-events:none}
+
+/* ══════════ KAYDIRMA PENCERESİ (kartın kremi) ══════════ */
+.window{position:absolute; left:var(--win-l); top:var(--win-t); width:var(--win-w); height:var(--win-h);
+  z-index:3; opacity:0; transition:opacity 1s ease}
+.window.on{opacity:1}
+.scroller{position:absolute; inset:0; overflow-y:auto; overflow-x:hidden;
+  scroll-snap-type:y proximity; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;
+  scrollbar-width:none;
+  -webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 13%, #000 87%, transparent 100%);
+          mask-image:linear-gradient(to bottom, transparent 0, #000 13%, #000 87%, transparent 100%)}
+.scroller::-webkit-scrollbar{display:none}
+
+.sec{position:relative; scroll-snap-align:center; min-height:100%;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; padding:6% 0}
+.sec > *{opacity:0; transform:translate3d(0,26px,0);
+  transition:opacity .9s var(--ease), transform 1s var(--ease); will-change:opacity,transform}
+.sec.in > *{opacity:1; transform:none}
+.sec.out > *{opacity:0; transform:translate3d(0,-16px,0)}
+
+.art{width:100%; display:block; filter:drop-shadow(0 8px 16px rgba(120,70,40,.28))}
+.wrap{position:relative; width:90%; margin:0 auto}
+
+/* görünmez buton isabet alanları (detaylar.webp) */
+.hot{position:absolute; border:0; background:transparent; cursor:pointer; border-radius:100px;
+  transition:transform .16s var(--ease), filter .16s ease}
+.hot:active{transform:scale(.96); filter:brightness(1.1)}
+.hot:focus-visible{outline:2px solid rgba(181,65,106,.7); outline-offset:2px}
+
+/* çerçeve içi geri sayım (cerceve.webp) */
+.frame-wrap{position:relative; width:100%; container-type:inline-size}
+.timer{position:absolute; left:48.5%; top:55%; transform:translate(-50%,-50%);
+  width:50%; text-align:center; pointer-events:none}
+.timer .ttl{font-size:4.1cqw; letter-spacing:.1em; text-transform:uppercase; color:var(--rose-deep);
+  font-weight:700; margin-bottom:1.6cqw; text-shadow:0 1px 0 rgba(255,255,255,.5)}
+.timer .cd{display:flex; justify-content:center; gap:2.4cqw}
+.timer .u{display:flex; flex-direction:column; align-items:center; min-width:9cqw}
+.timer .u b{font-size:8cqw; line-height:1; font-weight:700; color:var(--gold-deep);
+  font-variant-numeric:tabular-nums; text-shadow:0 1px 0 rgba(255,255,255,.55), 0 2px 3px rgba(150,100,40,.35)}
+.timer .u span{font-size:2.6cqw; letter-spacing:.06em; text-transform:uppercase; color:var(--ink); margin-top:1cqw; opacity:.85}
+
+/* ══════════ KAPAK (kapak.webp zarf) ══════════ */
+#intro{position:absolute; inset:0; z-index:20; cursor:pointer;
+  background:url("assets/kapak.webp") center center / 100% 100% no-repeat;
+  transition:opacity .8s ease, visibility .8s}
+#intro.gone{opacity:0; visibility:hidden; pointer-events:none}
+#intro .hint{position:absolute; left:0; right:0; bottom:6%; text-align:center;
+  font-size:clamp(12px,3.2vw,15px); letter-spacing:.3em; text-transform:uppercase;
+  color:#fff5ea; text-shadow:0 2px 14px rgba(120,50,20,.85);
+  animation:hintGlow 3s ease-in-out infinite}
+@keyframes hintGlow{0%,100%{opacity:.72}50%{opacity:1}}
+.seal-ring{position:absolute; left:49%; top:56%; width:26%; aspect-ratio:1;
+  transform:translate(-50%,-50%); border-radius:50%; pointer-events:none;
+  box-shadow:0 0 0 1.5px rgba(255,226,196,.6), 0 0 42px 8px rgba(255,203,150,.42);
+  animation:breathe 3.2s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.5}50%{transform:translate(-50%,-50%) scale(1.12);opacity:1}}
+
+/* açılış videosu */
+#gate{position:absolute; inset:0; z-index:22; background:transparent;
+  opacity:0; visibility:hidden; transition:opacity .5s ease, visibility .5s}
+#gate.on{opacity:1; visibility:visible}
+#gate video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block}
+
+/* kaydır ipucu */
+.cue{position:absolute; left:50%; bottom:3%; z-index:4; transform:translateX(-50%);
+  color:var(--rose-deep); text-align:center; pointer-events:none; transition:opacity .5s ease}
+.cue.hide{opacity:0}
+.cue span{display:block; font-size:10px; letter-spacing:.22em; text-transform:uppercase; margin-bottom:3px; font-weight:700}
+.cue svg{width:20px; height:20px; animation:bob 1.8s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+
+/* RSVP sayfası */
+.sheet{position:fixed; inset:0; z-index:50; display:grid; place-items:center; padding:22px;
+  background:rgba(24,12,16,.85);
+  opacity:0; visibility:hidden; transition:opacity .38s var(--ease), visibility .38s}
+.sheet.on{opacity:1; visibility:visible}
+.sheet-card{width:100%; max-width:330px; background:linear-gradient(168deg,#fdf7f0,#f7e4ea);
+  color:var(--ink); border-radius:20px; padding:26px 22px 20px; text-align:center;
+  border:1px solid rgba(199,154,91,.5); box-shadow:0 26px 60px rgba(20,6,10,.6);
+  transform:translateY(16px) scale(.97); transition:transform .42s var(--ease)}
+.sheet.on .sheet-card{transform:none}
+.sheet-card h3{font-size:20px; color:var(--rose-deep); margin-bottom:6px}
+.sheet-card p{font-size:13px; line-height:1.6; opacity:.8; margin-bottom:16px}
+.sheet-card input{width:100%; font:inherit; font-size:15px; padding:12px 14px; margin-bottom:14px;
+  text-align:center; border:1px solid rgba(199,154,91,.55); border-radius:12px; background:#fffdfa; color:var(--ink)}
+.sheet-card input:focus{outline:none; border-color:var(--rose); box-shadow:0 0 0 3px rgba(209,122,148,.2)}
+.row{display:flex; gap:10px}
+.btn{flex:1; font:inherit; font-size:14px; padding:12px 10px; border-radius:12px; cursor:pointer;
+  border:1px solid transparent; transition:transform .2s var(--ease), filter .2s}
+.btn:active{transform:scale(.97)}
+.btn-go{background:linear-gradient(140deg,var(--rose),var(--rose-deep)); color:#fff}
+.btn-x{background:transparent; border-color:rgba(122,90,72,.3); color:var(--ink)}
+.toast{position:fixed; left:50%; bottom:9%; z-index:60; transform:translate(-50%,14px);
+  padding:11px 20px; border-radius:999px; background:rgba(253,246,239,.97); color:var(--ink);
+  font-size:13.5px; white-space:nowrap; box-shadow:0 12px 34px rgba(20,6,10,.5);
+  opacity:0; pointer-events:none; transition:opacity .34s ease, transform .34s var(--ease)}
+.toast.on{opacity:1; transform:translate(-50%,0)}
+
+@media(prefers-reduced-motion:reduce){
+  .sec>*{transition-duration:.25s!important} #dust{display:none}
+  .cue svg,.seal-ring,#intro .hint{animation:none}
+}
+</style>
+</head>
+<body>
+<div class="frame"><div class="stage" id="stage">
+  <canvas id="dust"></canvas>
+
+  <!-- kaydırma penceresi (kartın kremi) -->
+  <div class="window" id="window">
+    <div class="scroller" id="scroller">
+      <section class="sec"><img class="art" src="assets/ad.webp" alt="Asel 4 Yaşında" loading="eager"></section>
+      <section class="sec"><img class="art" src="assets/mesaj.webp" alt="Masal gibi bir doğum gününe seni de bekliyoruz"></section>
+
+      <section class="sec">
+        <div class="wrap">
+          <img class="art" src="assets/detaylar.webp" alt="Konum, tarih ve katılım">
+          <button class="hot" id="hotMap" type="button" aria-label="Konumu haritada aç"
+                  style="left:64.5%; top:16.2%; width:29%; height:8%"></button>
+          <button class="hot" id="hotYes" type="button" aria-label="Katılıyorum"
+                  style="left:4.5%; top:81.6%; width:45%; height:10%"></button>
+          <button class="hot" id="hotNo" type="button" aria-label="Katılamıyorum"
+                  style="left:53.5%; top:81.6%; width:43%; height:10%"></button>
+        </div>
+      </section>
+
+      <section class="sec">
+        <div class="frame-wrap">
+          <img class="art" src="assets/cerceve.webp" alt="Kutlamaya kalan süre">
+          <div class="timer" aria-live="polite">
+            <div class="ttl">Kutlamaya Kalan</div>
+            <div class="cd">
+              <div class="u"><b data-cd="d">00</b><span>Gün</span></div>
+              <div class="u"><b data-cd="h">00</b><span>Saat</span></div>
+              <div class="u"><b data-cd="m">00</b><span>Dakika</span></div>
+              <div class="u"><b data-cd="s">00</b><span>Saniye</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="sec"><img class="art" src="assets/kapanis.webp" alt="Aramızda sizi görmek bizi çok mutlu edecek"></section>
+    </div>
+  </div>
+
+  <!-- kaydır ipucu -->
+  <div class="cue" id="cue" hidden><span>Kaydır</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+  </div>
+
+  <!-- açılış videosu -->
+  <div id="gate" aria-hidden="true"><video id="ov" playsinline webkit-playsinline preload="auto"></video></div>
+
+  <!-- kapak (zarf) -->
+  <div id="intro" role="button" tabindex="0" aria-label="Davetiyeyi aç">
+    <span class="seal-ring"></span>
+    <p class="hint">Mühre dokun</p>
+  </div>
+</div></div>
+
+<!-- RSVP -->
+<div class="sheet" id="sheet" role="dialog" aria-modal="true">
+  <div class="sheet-card">
+    <h3 id="sheetTitle">Katılıyorum</h3>
+    <p id="sheetText">İsmini yaz, katılım bilgini iletelim.</p>
+    <input id="guestName" type="text" placeholder="İsminiz" autocomplete="name" enterkeyhint="send">
+    <div class="row">
+      <button class="btn btn-x" id="sheetCancel" type="button">Vazgeç</button>
+      <button class="btn btn-go" id="sheetSend" type="button">Gönder</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+const C=window.CONFIG, $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const stage=$('#stage'), intro=$('#intro'), gate=$('#gate'), ov=$('#ov'),
+      win=$('#window'), scroller=$('#scroller'), cue=$('#cue');
+
+/* ── akış: kapak → açılış videosu → pencere ── */
+let started=false, revealed=false;
+function reveal(){
+  if(revealed) return; revealed=true;
+  win.classList.add('on');
+  const first=$('.sec'); if(first) first.classList.add('in');
+  cue.hidden=false;
+  setTimeout(()=>{ gate.classList.remove('on'); gate.setAttribute('aria-hidden','true');
+    try{ov.pause(); ov.removeAttribute('src'); ov.load();}catch(e){} }, 550);
+}
+function begin(){
+  if(started) return; started=true;
+  let gateShown=false;
+  const showGate=()=>{ if(gateShown) return; gateShown=true;
+    gate.classList.add('on'); setTimeout(()=>intro.classList.add('gone'),140); };
+  try{ ov.currentTime=0; }catch(e){}
+  const p=ov.play(); if(p&&p.catch) p.catch(()=>{ ov.muted=true; ov.play().catch(reveal); });
+  /* #gate yalnızca video ilk karesi hazır/oynuyorken açılır → arada boş kare olmaz */
+  if(ov.readyState>=2) showGate();
+  ov.addEventListener('loadeddata', showGate, {once:true});
+  ov.addEventListener('playing', showGate, {once:true});
+  ov.addEventListener('ended', reveal, {once:true});
+  ov.addEventListener('error', reveal, {once:true});
+  ov.addEventListener('timeupdate', function t(){ if(revealed){ov.removeEventListener('timeupdate',t);return;}
+    if(ov.duration&&isFinite(ov.duration)&&ov.currentTime>=ov.duration-0.25) reveal(); });
+  setTimeout(showGate, 1200); /* güvenlik */
+  setTimeout(reveal, 9000);   /* emniyet */
+}
+intro.addEventListener('click', begin);
+intro.addEventListener('touchend', e=>{e.preventDefault();begin();},{passive:false});
+intro.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();begin();} });
+
+/* açılış videosunu önden hazırla → mühre dokununca anında oynar */
+try{ ov.src='assets/acilis.mp4'; ov.muted=true; ov.playsInline=true; ov.preload='auto'; ov.load(); }catch(e){}
+
+/* ── scroll animasyonu ── */
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{
+  if(e.isIntersecting){ e.target.classList.add('in'); e.target.classList.remove('out'); }
+  else e.target.classList.toggle('out', e.boundingClientRect.top<0);
+});},{root:scroller, threshold:.45});
+$$('.sec').forEach(s=>io.observe(s));
+scroller.addEventListener('scroll',()=>{ if(scroller.scrollTop>30) cue.classList.add('hide'); },{passive:true});
+
+/* ── canlı geri sayım ── */
+const cells={d:$('[data-cd="d"]'),h:$('[data-cd="h"]'),m:$('[data-cd="m"]'),s:$('[data-cd="s"]')};
+const target=new Date(C.event.startISO).getTime(), pad=n=>String(n).padStart(2,'0');
+(function tick(){ let df=Math.max(0,target-Date.now()); const s=Math.floor(df/1000);
+  cells.d.textContent=pad(Math.floor(s/86400)); cells.h.textContent=pad(Math.floor(s%86400/3600));
+  cells.m.textContent=pad(Math.floor(s%3600/60)); cells.s.textContent=pad(s%60); setTimeout(tick,1000); })();
+
+/* ── güvenilir link açma (mobil + sandbox) ── */
+function openUrl(url){
+  try{
+    const a=document.createElement('a'); a.href=url; a.target='_blank'; a.rel='noopener noreferrer';
+    document.body.appendChild(a); a.click(); a.remove();
+  }catch(e){ try{ if(!window.open(url,'_blank')) location.href=url; }catch(_){ location.href=url; } }
+}
+
+/* ── harita ── */
+$('#hotMap').addEventListener('click',()=>{ const L=C.location;
+  const q=(L.name+' '+L.line).replace(/\s*·\s*/g,' ').replace(/\s+/g,' ').trim();
+  const url=L.mapUrl||('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q));
+  openUrl(url); });
+
+/* ── RSVP ── */
+const sheet=$('#sheet'); let ans='yes', tT, dustPaused=false;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('on'),2600);}
+function openSheet(w){ans=w; $('#sheetTitle').textContent=w==='yes'?'Katılıyorum':'Katılamıyorum';
+  $('#sheetText').textContent=w==='yes'?'İsmini yaz, katılım bilgini iletelim.':'İsmini yaz, bilgini iletelim. Seni özleyeceğiz.';
+  sheet.classList.add('on'); dustPaused=true; if(C.rsvp.askName) setTimeout(()=>$('#guestName').focus(),380);}
+function closeSheet(){sheet.classList.remove('on'); dustPaused=false;}
+function send(){const name=($('#guestName').value||'').trim();
+  const base=ans==='yes'?C.rsvp.yesMsg:C.rsvp.noMsg, text=name?base+'\n— '+name:base;
+  openUrl('https://wa.me/'+C.rsvp.whatsapp+'?text='+encodeURIComponent(text));
+  closeSheet(); toast(ans==='yes'?'Teşekkürler, seni bekliyoruz 💗':'Bilgin iletildi, teşekkürler');}
+$('#hotYes').addEventListener('click',()=>C.rsvp.askName?openSheet('yes'):(ans='yes',send()));
+$('#hotNo').addEventListener('click',()=>C.rsvp.askName?openSheet('no'):(ans='no',send()));
+$('#sheetCancel').addEventListener('click',closeSheet); $('#sheetSend').addEventListener('click',send);
+$('#guestName').addEventListener('keydown',e=>{if(e.key==='Enter')send();});
+sheet.addEventListener('click',e=>{if(e.target===sheet)closeSheet();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet();});
+
+/* ── peri tozu ── */
+const cv=$('#dust'), ctx=cv.getContext('2d'); let W,H,DPR,parts;
+function size(){DPR=Math.min(devicePixelRatio||1,2);W=cv.clientWidth;H=cv.clientHeight;
+  cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);
+  const n=Math.round(W*H/18000);
+  parts=Array.from({length:Math.max(16,Math.min(44,n))},()=>({x:Math.random()*W,y:Math.random()*H,
+    r:.5+Math.random()*1.9,vy:-(3+Math.random()*9)/60,vx:(Math.random()-.5)*.22,
+    a:.08+Math.random()*.4,ph:Math.random()*6.28,sp:.5+Math.random()*1.2}));}
+function draw(t){requestAnimationFrame(draw); if(dustPaused){return;} ctx.clearRect(0,0,W,H);
+  for(const p of parts){p.y+=p.vy;p.x+=p.vx+Math.sin(t/900*p.sp+p.ph)*.14;
+    if(p.y<-6){p.y=H+6;p.x=Math.random()*W;}
+    const tw=p.a*(.55+.45*Math.sin(t/600*p.sp+p.ph));
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.283);
+    ctx.fillStyle='rgba(255,228,186,'+tw+')';ctx.shadowBlur=6;ctx.shadowColor='rgba(255,210,150,.7)';
+    ctx.fill();ctx.shadowBlur=0;}
+}
+size();addEventListener('resize',size,{passive:true});requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>

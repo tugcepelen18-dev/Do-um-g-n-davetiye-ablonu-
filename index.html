@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Davetiye Şablonları</title>
+<style>
+  :root{
+    --paper:#FBF7EF; --surface:#FFFDF8; --surface-2:#F3EBD9;
+    --ink:#3E3122; --ink-soft:#8A7658; --line:rgba(120,96,62,.18);
+    --gold:#C58C2C; --gold-deep:#A9741E; --sage:#6E7F4E;
+    --shadow:0 18px 42px -26px rgba(90,70,50,.5), 0 3px 10px -6px rgba(90,70,50,.25);
+    --radius:20px;
+    --ff-display:Georgia,"Times New Roman",serif;
+    --ff-body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#1C1710; --surface:#2A2218; --surface-2:#332A1D;
+      --ink:#EFE6D5; --ink-soft:#B7A488; --line:rgba(220,200,160,.16);
+      --gold:#E2AE4A; --gold-deep:#C58C2C; --sage:#9BAE73;
+      --shadow:0 20px 46px -26px rgba(0,0,0,.7), 0 3px 10px -6px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="light"]{
+    --paper:#FBF7EF; --surface:#FFFDF8; --surface-2:#F3EBD9;
+    --ink:#3E3122; --ink-soft:#8A7658; --line:rgba(120,96,62,.18);
+    --gold:#C58C2C; --gold-deep:#A9741E; --sage:#6E7F4E;
+    --shadow:0 18px 42px -26px rgba(90,70,50,.5), 0 3px 10px -6px rgba(90,70,50,.25);
+  }
+  :root[data-theme="dark"]{
+    --paper:#1C1710; --surface:#2A2218; --surface-2:#332A1D;
+    --ink:#EFE6D5; --ink-soft:#B7A488; --line:rgba(220,200,160,.16);
+    --gold:#E2AE4A; --gold-deep:#C58C2C; --sage:#9BAE73;
+    --shadow:0 20px 46px -26px rgba(0,0,0,.7), 0 3px 10px -6px rgba(0,0,0,.5);
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:var(--ff-body); color:var(--ink);
+    background:
+      radial-gradient(120% 80% at 50% -10%, var(--surface-2) 0%, var(--paper) 55%);
+    min-height:100dvh; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    line-height:1.55;
+  }
+  .wrap{max-width:960px; margin:0 auto; padding:clamp(28px,6vw,72px) clamp(18px,4vw,32px) 64px;}
+
+  header{text-align:center; margin-bottom:clamp(28px,5vw,48px);}
+  .eyebrow{
+    font-size:12px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--gold-deep); font-weight:700; margin:0 0 14px;
+  }
+  h1{
+    font-family:var(--ff-display); font-weight:700; color:var(--ink);
+    font-size:clamp(30px,6vw,46px); line-height:1.08; margin:0 0 12px;
+    text-wrap:balance; letter-spacing:-.01em;
+  }
+  .lede{color:var(--ink-soft); font-size:clamp(15px,2.4vw,17px); max-width:46ch; margin:0 auto;}
+
+  .cat{display:flex; align-items:center; gap:14px; margin:8px 0 22px;}
+  .cat__label{
+    font-family:var(--ff-body); font-size:13px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--ink-soft); font-weight:700; white-space:nowrap;
+  }
+  .cat__rule{height:1px; background:var(--line); flex:1;}
+  .cat__count{
+    font-size:12px; color:var(--ink-soft); background:var(--surface-2);
+    border:1px solid var(--line); border-radius:999px; padding:3px 10px; font-weight:600;
+  }
+
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:clamp(16px,3vw,26px);}
+
+  .card{
+    display:flex; flex-direction:column; background:var(--surface);
+    border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
+    text-decoration:none; color:inherit; box-shadow:var(--shadow);
+    transition:transform .22s cubic-bezier(.2,.7,.2,1), box-shadow .22s ease, border-color .22s ease;
+  }
+  .card:hover{transform:translateY(-4px); box-shadow:0 26px 54px -28px rgba(80,60,40,.55); border-color:rgba(197,140,44,.5);}
+  .card:focus-visible{outline:3px solid var(--gold); outline-offset:3px;}
+  .thumb{position:relative; aspect-ratio:3/4; background:var(--surface-2); overflow:hidden;}
+  .thumb img{width:100%; height:100%; object-fit:cover; display:block;}
+  .thumb__tag{
+    position:absolute; top:12px; left:12px; z-index:2;
+    background:rgba(255,253,248,.92); color:var(--gold-deep);
+    font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+    padding:5px 10px; border-radius:999px; box-shadow:0 4px 12px -6px rgba(0,0,0,.35);
+  }
+  .body{padding:16px 18px 18px; display:flex; flex-direction:column; gap:6px; flex:1;}
+  .title{font-family:var(--ff-display); font-size:20px; font-weight:700; margin:0; color:var(--ink);}
+  .desc{font-size:14px; color:var(--ink-soft); margin:0; flex:1;}
+  .open{
+    display:inline-flex; align-items:center; gap:7px; margin-top:10px;
+    font-size:14px; font-weight:700; color:var(--gold-deep);
+  }
+  .open svg{width:16px; height:16px; transition:transform .2s ease;}
+  .card:hover .open svg{transform:translateX(3px);}
+
+  footer{text-align:center; color:var(--ink-soft); font-size:13px; margin-top:clamp(36px,6vw,56px);}
+  footer .heart{color:var(--gold-deep);}
+
+  @media (prefers-reduced-motion: reduce){
+    .card, .open svg{transition:none;}
+    .card:hover{transform:none;}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <p class="eyebrow">E&#8209;Davetiye</p>
+      <h1>Davetiye Şablonları</h1>
+      <p class="lede">Her tema, dokununca açılan animasyonlu bir davetiyedir. Bir tema seçin ve önizleyin.</p>
+    </header>
+
+    <section aria-labelledby="cat-dogumgunu">
+      <div class="cat">
+        <span class="cat__label" id="cat-dogumgunu">Doğum Günü</span>
+        <span class="cat__rule"></span>
+        <span class="cat__count">5 tema</span>
+      </div>
+
+      <div class="grid">
+        <a class="card" href="dogum-gunu/hediye-kutu-acilimi/">
+          <div class="thumb">
+            <span class="thumb__tag">Hediye Kutusu</span>
+            <img src="dogum-gunu/hediye-kutu-acilimi/assets/kapak.png" alt="Hediye kutu açılımı teması kapağı" loading="lazy" />
+          </div>
+          <div class="body">
+            <p class="title">Hediye Kutu Açılımı</p>
+            <p class="desc">Işıltılı hediye kutusu açılır, animasyonlu davetiye ve canlı geri sayım belirir.</p>
+            <span class="open">Aç
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </span>
+          </div>
+        </a>
+
+        <a class="card" href="dogum-gunu/sevimli-hayvanlar-yagli-boya/">
+          <div class="thumb">
+            <span class="thumb__tag">Yağlı Boya</span>
+            <img src="dogum-gunu/sevimli-hayvanlar-yagli-boya/assets/kapak.jpg" alt="Sevimli hayvanlar yağlı boya teması kapağı" loading="lazy" />
+          </div>
+          <div class="body">
+            <p class="title">Sevimli Hayvanlar Yağlı Boya</p>
+            <p class="desc">Sulu boya sevimli hayvanlar; zarf açılışı, fotoğraflı kart ve kaydırmalı davetiye.</p>
+            <span class="open">Aç
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </span>
+          </div>
+        </a>
+
+        <a class="card" href="dogum-gunu/prens-mi-prenses-mi/">
+          <div class="thumb">
+            <span class="thumb__tag">Tahmin</span>
+            <img src="dogum-gunu/prens-mi-prenses-mi/assets/kapak.jpg" alt="Prens mi Prenses mi teması kapağı" loading="lazy" />
+          </div>
+          <div class="body">
+            <p class="title">Prens mi? Prenses mi?</p>
+            <p class="desc">Deniz kabuğu açılır; tahminini yap, canlı geri sayım ve sahil temalı davetiye.</p>
+            <span class="open">Aç
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </span>
+          </div>
+        </a>
+
+        <a class="card" href="dogum-gunu/peri-bahcesi/">
+          <div class="thumb">
+            <span class="thumb__tag">Peri Bahçesi</span>
+            <img src="dogum-gunu/peri-bahcesi/assets/kapak.webp" alt="Peri bahçesi kaydırmalı doğum günü davetiyesi teması kapağı" loading="lazy" />
+          </div>
+          <div class="body">
+            <p class="title">Peri Bahçesi</p>
+            <p class="desc">Mühre dokun, açılış videosu oynar; kartın içinde kayan davetiye, canlı geri sayım ve WhatsApp katılım.</p>
+            <span class="open">Aç
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </span>
+          </div>
+        </a>
+
+        <a class="card" href="dogum-gunu/bahce-partisi/">
+          <div class="thumb">
+            <span class="thumb__tag">Bahçe Partisi</span>
+            <img src="dogum-gunu/bahce-partisi/assets/kapak-poster.webp" alt="Bahçe partisi doğum günü davetiyesi teması kapağı" loading="lazy" />
+          </div>
+          <div class="body">
+            <p class="title">Bahçe Partisi</p>
+            <p class="desc">Perdeye dokun, sahne açılır; kutlama animasyonu, cam kartlı bahçe davetiyesi ve canlı geri sayım.</p>
+            <span class="open">Aç
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section aria-labelledby="cat-magaza">
+      <div class="cat">
+        <span class="cat__label" id="cat-magaza">Mağaza Açılışı</span>
+        <span class="cat__rule"></span>
+        <span class="cat__count">2 tema</span>
+      </div>
+
+      <div class="grid">
+        <a class="card" href="magaza-acilisi/guzellik-merkezi/">
+          <div class="thumb">
+            <span class="thumb__tag">Güzellik Merkezi</span>
+            <img src="magaza-acilisi/guzellik-merkezi/assets/kapak.jpg" alt="Güzellik merkezi büyük açılış teması kapağı" loading="lazy" />
+          </div>
+          <div class="body">
+            <p class="title">Güzellik Merkezi Açılışı</p>
+            <p class="desc">Kadife ve altın; mühür açılışı, açılışa özel kampanya, geri sayım ve katılım formu.</p>
+            <span class="open">Aç
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </span>
+          </div>
+        </a>
+        <a class="card" href="magaza-acilisi/millenas-yeni/">
+          <div class="thumb">
+            <span class="thumb__tag">Millenas</span>
+            <img src="magaza-acilisi/millenas-yeni/assets/kapak.jpg" alt="Millenas mağazası açılış daveti teması kapağı" loading="lazy" />
+          </div>
+          <div class="body">
+            <p class="title">Millenas Mağazası Açılışı</p>
+            <p class="desc">Siyah ve altın; mühür açılışı, açılış bilgileri, canlı geri sayım, takvime ekle ve adres/RSVP.</p>
+            <span class="open">Aç
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section aria-labelledby="cat-dugun">
+      <div class="cat">
+        <span class="cat__label" id="cat-dugun">Düğün</span>
+        <span class="cat__rule"></span>
+        <span class="cat__count">3 tema</span>
+      </div>
+
+      <div class="grid">
+        <a class="card" href="dugun/bordo-dantel/">
+          <div class="thumb">
+            <span class="thumb__tag">Bordo Dantel</span>
+            <img src="dugun/bordo-dantel/assets/onizleme.jpg" alt="Bordo dantel düğün davetiyesi teması kapağı" loading="lazy" />
+          </div>
+          <div class="body">
+            <p class="title">Bordo Dantel</p>
+            <p class="desc">Zarf kapağına dokun, açılış videosu oynar; bordo kadife davetiye, kalp fotoğraf çerçevesi ve katılım formu.</p>
+            <span class="open">Aç
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </span>
+          </div>
+        </a>
+
+        <a class="card" href="dugun/adacayi-yesili/">
+          <div class="thumb">
+            <span class="thumb__tag">Adaçayı Yeşili</span>
+            <img src="dugun/adacayi-yesili/assets/son-2.jpg" alt="Adaçayı yeşili düğün davetiyesi teması kapağı" loading="lazy" />
+          </div>
+          <div class="body">
+            <p class="title">Adaçayı Yeşili</p>
+            <p class="desc">Ekrana dokundukça ilerleyen çok sahneli sinematik davetiye; plak müziği, Save the Date ve canlı geri sayım.</p>
+            <span class="open">Aç
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </span>
+          </div>
+        </a>
+
+        <a class="card" href="dugun/canva-tarzi/">
+          <div class="thumb">
+            <span class="thumb__tag">Bordo Okaliptus</span>
+            <img src="dugun/canva-tarzi/assets/cover.webp" alt="Canva tarzı bordo okaliptus düğün davetiyesi teması kapağı" loading="lazy" />
+          </div>
+          <div class="body">
+            <p class="title">Canva Tarzı</p>
+            <p class="desc">Canva tarzı, bordo ve okaliptus temalı; mühre dokun, bölüm bölüm ilerleyen davetiye ve katılım formu.</p>
+            <span class="open">Aç
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <footer>Sevgiyle hazırlandı <span class="heart">&#9829;</span></footer>
+  </div>
+</body>
+</html>
